@@ -1,14 +1,15 @@
 #ifndef PASSENGER_H
 #define PASSENGER_H
-#include "elevator.h"
 
-
+#include <direction.h>
+class Building;
 class passenger
 {
 public:
-    int favorateFloor;
-    int currentFloor;
-    passenger();
+    int m_favorateFloor;
+    int m_currentFloor;
+    Building& m_building;
+    passenger(Building& building);
     void RequestElevator(Direction direction);
     void RequestFloor(int floorNum);
 };

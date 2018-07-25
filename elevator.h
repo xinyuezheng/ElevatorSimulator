@@ -2,9 +2,10 @@
 #define ELEVATOR_H
 
 #include <vector>
-using std::vector;
+#include <direction.h>
+#include <bugcodes.h>
 
-typedef enum Direction{up, down} Direction;
+using std::vector;
 
 class Building;
 class Elevator

@@ -1,7 +1,7 @@
 #include "passenger.h"
-#include "building.h"
 
-passenger::passenger()
+#include "building.h"
+passenger::passenger(Building& building) : m_building(building)
 {
 
 }
@@ -9,11 +9,11 @@ passenger::passenger()
 void passenger::RequestElevator(Direction direction)
 {
     if (direction == up) {
-//        m_building.floors.at(floorNum).requestUp = true;
+        m_building.floors.at(m_currentFloor).requestUp = true;
     }
 
     if (direction == down) {
-//        m_building.floors.at(floorNum).requestDown = true;
+        m_building.floors.at(m_currentFloor).requestDown = true;
     }
 }
 

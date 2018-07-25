@@ -1,7 +1,7 @@
 #include "elevator.h"
 #include <ctime>
 #include <windows.h>
-#include "building.h"
+#include <building.h>
 
 Elevator::Elevator(Building& building)
     : m_building(building)
@@ -37,10 +37,16 @@ void Elevator::MoveTo(int dstFloor){
 
     currentSpeed = 0;
     currentFloor = dstFloor;
+
+    //change direction after arriving at top/bottom
+    if (currentFloor == m_building.m_numFloors - 1 && currentDirection == up)
+        currentDirection = down;
+    if (currentFloor == 0 && currentDirection == down)
+        currentDirection = up;
 }
 
 void Elevator::NextStop(){
-    if (currentDirection == up && m_building.floors.at(currentFloor).requestUp) {
-        //MoveTo();
-    }
+//    if (currentDirection == up && m_building.floors.at(currentFloor).requestUp) {
+//        //MoveTo();
+//    }
 }

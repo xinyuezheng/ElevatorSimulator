@@ -30,14 +30,16 @@ SOURCES += \
     elevator.cpp \
     simulator.cpp \
     floor.cpp \
-    passenger.cpp
+    passenger.cpp \
+    controller.cpp
 
 HEADERS += \
         mainwindow.h \
     building.h \
     elevator.h \
     simulator.h \
-    floor.h
+    floor.h \
+    direction.h
 
 FORMS += \
         mainwindow.ui
