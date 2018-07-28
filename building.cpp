@@ -9,7 +9,7 @@ Building::Building(int numElevators , int numFloors)
 
     elevators.reserve(numElevators);
     for (int i = 0; i < numElevators; i++) {
-        elevators.push_back(Elevator(*this));
+        elevators.push_back(unique_ptr<Elevator>(new Elevator(*this)));
     }
 
     floors.reserve(numFloors);

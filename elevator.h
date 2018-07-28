@@ -4,11 +4,11 @@
 #include <vector>
 #include <direction.h>
 #include <bugcodes.h>
-
+#include <QTimer>
 using std::vector;
 
 class Building;
-class Elevator
+class Elevator : public QObject
 {
 public:
     const int floorHeight = 3; //meters
@@ -22,6 +22,8 @@ public:
     Elevator(Building& building);
     void MoveTo(int distFloor);
     void NextStop();
+private:
+    void whenArrive();
 };
 
 #endif // ELEVATOR_H

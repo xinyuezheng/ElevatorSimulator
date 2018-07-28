@@ -11,39 +11,65 @@ Elevator::Elevator(Building& building)
     }
 }
 
-void Elevator::MoveTo(int dstFloor){
-    double distance = 0;
-
-    if (dstFloor > currentFloor) {
-        distance = (dstFloor - currentFloor) * floorHeight;
-        currentDirection = up;
-    } else {
-        distance = (currentFloor - dstFloor) * floorHeight;
+void Elevator::MoveTo(int distFloor)
+{
+//    mTimer = new QTimer(this);
+//    mTimer->setSingleShot(true);
+//    connect(mTimer, SIGNAL(timeout()), SLOT(whenArrive()));
+    int floorDist = distFloor - currentFloor;
+    if (floorDist < 0) {
         currentDirection = down;
+        floorDist = 0 - floorDist;
+    } else {
+        currentDirection = up;
     }
 
-    //TODO: accelerate available later
-    currentSpeed = 1; //1m/s
-    double movedDist = 0;
-    time_t duration, now, begin = time(0);
+    QTimer::singleShot(floorDist * 5000, this, SLOT(whenArrive()));
+}
 
-    while (movedDist <= distance)
-    {
-        now = time(0);
-        duration = now - begin;
-        movedDist = duration * currentSpeed;
-        Sleep(500); //500 ms
-    }
+void Elevator::whenArrive()
+{
+//    mTimer->start(1000);
 
-    currentSpeed = 0;
-    currentFloor = dstFloor;
-
-    //change direction after arriving at top/bottom
     if (currentFloor == m_building.m_numFloors - 1 && currentDirection == up)
         currentDirection = down;
     if (currentFloor == 0 && currentDirection == down)
         currentDirection = up;
 }
+
+//void Elevator::MoveTo(int dstFloor){
+//    double distance = 0;
+
+//    if (dstFloor > currentFloor) {
+//        distance = (dstFloor - currentFloor) * floorHeight;
+//        currentDirection = up;
+//    } else {
+//        distance = (currentFloor - dstFloor) * floorHeight;
+//        currentDirection = down;
+//    }
+
+//    //TODO: accelerate available later
+//    currentSpeed = 1; //1m/s
+//    double movedDist = 0;
+//    time_t duration, now, begin = time(0);
+
+//    while (movedDist <= distance)
+//    {
+//        now = time(0);
+//        duration = now - begin;
+//        movedDist = duration * currentSpeed;
+//        Sleep(500); //500 ms
+//    }
+
+//    currentSpeed = 0;
+//    currentFloor = dstFloor;
+
+//    //change direction after arriving at top/bottom
+//    if (currentFloor == m_building.m_numFloors - 1 && currentDirection == up)
+//        currentDirection = down;
+//    if (currentFloor == 0 && currentDirection == down)
+//        currentDirection = up;
+//}
 
 void Elevator::NextStop(){
 //    if (currentDirection == up && m_building.floors.at(currentFloor).requestUp) {

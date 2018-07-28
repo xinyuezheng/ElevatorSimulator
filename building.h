@@ -4,15 +4,17 @@
 #include <elevator.h>
 #include <floor.h>
 #include <vector>
+#include <memory>
 
 using std::vector;
+using std::unique_ptr;
 
 class Building
 {
 public:
     int m_numElevators;
     int m_numFloors;
-    vector<Elevator> elevators;
+    vector<unique_ptr<Elevator>> elevators;
     vector<Floor> floors;
     Building(int numElevators, int numFloors);
     ~Building();
