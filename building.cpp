@@ -7,14 +7,14 @@ Building::Building(int numElevators , int numFloors)
 {
     Controller controller(*this);
 
-    elevators.reserve(numElevators);
+    m_elevators.reserve(numElevators);
     for (int i = 0; i < numElevators; i++) {
-        elevators.push_back(unique_ptr<Elevator>(new Elevator(*this)));
+        m_elevators.push_back(unique_ptr<Elevator>(new Elevator(*this)));
     }
 
-    floors.reserve(numFloors);
+    m_floors.reserve(numFloors);
     for (int i = 0; i < numFloors; i++) {
-        floors.push_back(Floor(i, controller));
+        m_floors.push_back(Floor(i, controller));
     }
 }
 

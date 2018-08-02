@@ -6,18 +6,26 @@ passenger::passenger(Building& building) : m_building(building)
 
 }
 
-void passenger::RequestElevator(Direction direction)
+void passenger::GoToFloor(int elev_index, int floorNum)
 {
-    if (direction == up) {
-        m_building.floors.at(m_currentFloor).requestUp = true;
+    Req request;
+    request.floorNum = floorNum;
+    if (m_currentFloor < floorNum){
+        request.direction = up;
+    }
+    else {
+        request.direction = down;
     }
 
-    if (direction == down) {
-        m_building.floors.at(m_currentFloor).requestDown = true;
+    if(elev_index >= 0) {
+        m_building.m_elevators.at(elev_index)->m_tasklist.push(request);
     }
 }
 
-void passenger::RequestFloor(int floorNum)
+int passenger::RequestElev(Direction direction)
 {
-//    elevator.buttons[floorNum] = true;
+    int elev_index;
+    elev_index = m_building.m_floors.at(m_currentFloor).Request(direction);
+
+    return elev_index;
 }

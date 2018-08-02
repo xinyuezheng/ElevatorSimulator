@@ -3,6 +3,7 @@
 
 #include <direction.h>
 class Building;
+class Elevator;
 class passenger
 {
 public:
@@ -10,8 +11,8 @@ public:
     int m_currentFloor;
     Building& m_building;
     passenger(Building& building);
-    void RequestElevator(Direction direction);
-    void RequestFloor(int floorNum);
+    int RequestElev(Direction direction);
+    void GoToFloor(int elev_index, int floorNum);
 };
 
 #endif // PASSENGER_H

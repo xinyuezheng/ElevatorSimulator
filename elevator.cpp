@@ -2,6 +2,9 @@
 #include <ctime>
 #include <windows.h>
 #include <building.h>
+#include <vector>
+
+using std::vector;
 
 Elevator::Elevator(Building& building)
     : m_building(building)
@@ -11,68 +14,46 @@ Elevator::Elevator(Building& building)
     }
 }
 
+void Elevator::ExecuteTask() {
+    //TODO: put to while(1) in seperate thread
+    if(m_stopped && !m_tasklist.empty()) {
+        Req task = m_tasklist.front();
+        MoveTo(task.floorNum);
+        m_tasklist.pop();
+        //clear floor request;
+        m_building.m_floors.at(task.floorNum).ClearTask(task.direction);
+    }
+}
+
+
 void Elevator::MoveTo(int distFloor)
 {
-//    mTimer = new QTimer(this);
-//    mTimer->setSingleShot(true);
-//    connect(mTimer, SIGNAL(timeout()), SLOT(whenArrive()));
-    int floorDist = distFloor - currentFloor;
-    if (floorDist < 0) {
-        currentDirection = down;
-        floorDist = 0 - floorDist;
+    int nrFloorToMove = distFloor - m_currentFloor;
+    if (nrFloorToMove < 0) {
+        m_currentDirection = down;
+        nrFloorToMove = 0 - nrFloorToMove;
     } else {
-        currentDirection = up;
+        m_currentDirection = up;
     }
 
-    QTimer::singleShot(floorDist * 5000, this, SLOT(whenArrive()));
+    m_stopped = false;
+
+    for (int i = 0; i < nrFloorToMove; i++) {
+        QTimer::singleShot(5000, this, SLOT(moveOneFloor(m_currentDirection))); //5s to move one floor
+    }
+
+    m_stopped = true;
+
+    if (m_currentFloor == m_building.m_numFloors - 1 && m_currentDirection == up)
+        m_currentDirection = down;
+    if (m_currentFloor == 0 && m_currentDirection == down)
+        m_currentDirection = up;
 }
 
-void Elevator::whenArrive()
+void Elevator::moveOneFloor(Direction direction)
 {
-//    mTimer->start(1000);
-
-    if (currentFloor == m_building.m_numFloors - 1 && currentDirection == up)
-        currentDirection = down;
-    if (currentFloor == 0 && currentDirection == down)
-        currentDirection = up;
-}
-
-//void Elevator::MoveTo(int dstFloor){
-//    double distance = 0;
-
-//    if (dstFloor > currentFloor) {
-//        distance = (dstFloor - currentFloor) * floorHeight;
-//        currentDirection = up;
-//    } else {
-//        distance = (currentFloor - dstFloor) * floorHeight;
-//        currentDirection = down;
-//    }
-
-//    //TODO: accelerate available later
-//    currentSpeed = 1; //1m/s
-//    double movedDist = 0;
-//    time_t duration, now, begin = time(0);
-
-//    while (movedDist <= distance)
-//    {
-//        now = time(0);
-//        duration = now - begin;
-//        movedDist = duration * currentSpeed;
-//        Sleep(500); //500 ms
-//    }
-
-//    currentSpeed = 0;
-//    currentFloor = dstFloor;
-
-//    //change direction after arriving at top/bottom
-//    if (currentFloor == m_building.m_numFloors - 1 && currentDirection == up)
-//        currentDirection = down;
-//    if (currentFloor == 0 && currentDirection == down)
-//        currentDirection = up;
-//}
-
-void Elevator::NextStop(){
-//    if (currentDirection == up && m_building.floors.at(currentFloor).requestUp) {
-//        //MoveTo();
-//    }
+    if (direction == up)
+        m_currentFloor++ ;
+    else
+        m_currentFloor--;
 }

@@ -3,4 +3,9 @@
 
 typedef enum Direction{up, down} Direction;
 
+typedef struct Req {
+    int floorNum;
+    Direction direction;
+}Req;
+
 #endif // DIRECTION_H

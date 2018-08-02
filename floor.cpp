@@ -8,20 +8,31 @@ Floor::Floor(int floorNum, Controller& controller)
 
 }
 
-void Floor::RequestUp(){
-    vector<int>::iterator it;
-    it = find (m_controller.upRequest.begin(), m_controller.upRequest.end(), m_floorNum);
-    //no previous request found
-    if (it == m_controller.upRequest.end()) {
-        m_controller.upRequest.push_back(m_floorNum);
+int Floor::Request(Direction direction){
+    int elevator_index = -1;
+    Req newRequest = Req();
+    newRequest.floorNum = m_floorNum;
+    newRequest.direction = direction;
+
+    //no previous request
+    if (direction == up && !m_request_up)
+    {
+        m_request_up = true;
+        elevator_index = m_controller.RequestElev(newRequest);
     }
+
+    if (direction == down && !m_request_down) {
+        m_request_down = true;
+        elevator_index = m_controller.RequestElev(newRequest);
+    }
+
+    return elevator_index;
 }
 
-void Floor::RequestDown(){
-    vector<int>::iterator it;
-    it = find (m_controller.downRequest.begin(), m_controller.downRequest.end(), m_floorNum);
-    //no previous request found
-    if (it == m_controller.downRequest.end()) {
-        m_controller.downRequest.push_back(m_floorNum);
+void Floor::ClearTask(Direction direction){
+    if (direction == up) {
+        m_request_up = false;
+    } else {
+        m_request_down = false;
     }
 }
