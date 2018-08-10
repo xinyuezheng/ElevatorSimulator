@@ -14,7 +14,6 @@ unsigned Controller::FindElev(Req request){
 
     for (size_t i = 0; i < m_building.m_elevators.size(); i++)
     {
-//        unique_ptr<Elevator> elev = m_building.m_elevators.at(i);
         int distance = request.floorNum - m_building.m_elevators.at(i)->m_currentFloor;
 
         //Same direction as request

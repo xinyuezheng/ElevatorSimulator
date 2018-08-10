@@ -6,54 +6,75 @@
 
 using std::vector;
 
-Elevator::Elevator(Building& building)
-    : m_building(building)
-{
+Elevator::Elevator(Building& building) : m_building(building), m_state(Close)
+{    
     for(int i = 0; i < m_building.m_numFloors; i++){
-        buttons.push_back(false);
-    }
+        m_buttons.push_back(false);
+    }    
+
 }
 
-void Elevator::ExecuteTask() {
-    //TODO: put to while(1) in seperate thread
-    if(m_stopped && !m_tasklist.empty()) {
-        Req task = m_tasklist.front();
-        MoveTo(task.floorNum);
-        m_tasklist.pop();
-        //clear floor request;
-        m_building.m_floors.at(task.floorNum).ClearTask(task.direction);
+void Elevator::HandleStateMachine(ElevState state) {
+    int time = 0;
+    Req request;
+    request.floorNum = m_currentFloor;
+    switch (state) {
+    case Move:
+        time = MoveTo(request.floorNum);
+        break;
+    case Close:
+        time = DoorClosed(request);
+        break;
+    case Open:
+        time = DoorOpen();
+        break;
+    default:
+        break;
     }
+
+    if(time) {
+        QTimer::singleShot(5000, this, SLOT(HandleStateMachine));
+    }
+
 }
 
-
-void Elevator::MoveTo(int distFloor)
+int Elevator::MoveTo(int destFloor)
 {
-    int nrFloorToMove = distFloor - m_currentFloor;
+    int time = 5000;
+    int nrFloorToMove = destFloor - m_currentFloor;
     if (nrFloorToMove < 0) {
         m_currentDirection = down;
         nrFloorToMove = 0 - nrFloorToMove;
-    } else {
+    } else if (nrFloorToMove > 0) {
         m_currentDirection = up;
+    } else{
+        m_state = Open;
+        time = 0;
     }
-
-    m_stopped = false;
-
-    for (int i = 0; i < nrFloorToMove; i++) {
-        QTimer::singleShot(5000, this, SLOT(moveOneFloor(m_currentDirection))); //5s to move one floor
-    }
-
-    m_stopped = true;
 
     if (m_currentFloor == m_building.m_numFloors - 1 && m_currentDirection == up)
         m_currentDirection = down;
     if (m_currentFloor == 0 && m_currentDirection == down)
         m_currentDirection = up;
+
+    return time;
 }
 
-void Elevator::moveOneFloor(Direction direction)
-{
-    if (direction == up)
-        m_currentFloor++ ;
-    else
-        m_currentFloor--;
+
+int Elevator::DoorOpen(){
+    //clear floor request;
+    m_building.m_floors.at(m_currentFloor).ClearTask(m_currentDirection);
+    m_state = Close;
+    return 2000;
 }
+
+int Elevator::DoorClosed(Req& request){
+    if(!m_tasklist.empty()) {
+        request = m_tasklist.front();
+        m_tasklist.pop();
+        m_state = Move;
+    }
+
+    return 1000;
+}
+
